@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_22_155503) do
+ActiveRecord::Schema.define(version: 2020_03_22_160220) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,4 +35,14 @@ ActiveRecord::Schema.define(version: 2020_03_22_155503) do
     t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
   end
 
+  create_table "pages", force: :cascade do |t|
+    t.bigint "book_id", null: false
+    t.text "content"
+    t.integer "page_number"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["book_id"], name: "index_pages_on_book_id"
+  end
+
+  add_foreign_key "pages", "books"
 end
