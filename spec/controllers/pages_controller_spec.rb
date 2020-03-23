@@ -21,20 +21,45 @@ RSpec.describe PagesController, type: :controller do
 
   describe 'GET #show' do
     context 'when page exists' do
-      let(:page) { FactoryBot.create(:page, book: book) }
+      context 'without format param' do
+        let(:page) { FactoryBot.create(:page, book: book) }
 
-      before :each do
-        get :show, params: params
+        before :each do
+          get :show, params: params
+        end
+
+        it 'return http status ok' do
+          expect(response).to have_http_status(:ok)
+        end
+        
+        it 'return page on json' do
+          json = JSON.parse(response.body)
+          expect(json['page']['content']).to eq(page.content)
+          expect(json['page']['page_number']).to eq(page.page_number)
+        end
       end
 
-      it 'return http status ok' do
-        expect(response).to have_http_status(:ok)
-      end
-      
-      it 'return page on json' do
-        json = JSON.parse(response.body)
-        expect(json['page']['content']).to eq(page.content)
-        expect(json['page']['page_number']).to eq(page.page_number)
+      context 'with format param' do
+        let(:page) do
+          content = '**bold text**'
+          FactoryBot.create(:page, book: book, content: content)
+        end
+
+        context 'html' do
+          it 'return parsed content' do
+            get :show, params: params.merge(format: 'html')
+            json = JSON.parse(response.body)
+            expect(json['page']['content']).to eq("<p><strong>bold text</strong></p>\n")
+          end
+        end
+
+        context 'txt' do
+          it 'return parsed content' do
+            get :show, params: params.merge(format: 'txt')
+            json = JSON.parse(response.body)
+            expect(json['page']['content']).to eq("bold text\n")
+          end
+        end
       end
     end
 

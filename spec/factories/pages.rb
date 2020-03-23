@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :page do
     book
-    content { Faker::Lorem.paragraphs.join(' ') }
+    content { Faker::Markdown.sandwich }
     sequence :page_number do |n|
       n
     end

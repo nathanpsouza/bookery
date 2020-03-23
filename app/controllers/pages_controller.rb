@@ -6,7 +6,7 @@ class PagesController < ApplicationController
   end
 
   def show
-    render json: PageBlueprint.render(page, root: :page), status: :ok
+    render json: PageBlueprint.render(page, root: :page, format: params[:format]), status: :ok
   end
 
   def create
