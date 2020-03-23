@@ -1,7 +1,6 @@
 FactoryBot.define do
   factory :book do
-    title { "MyString" }
-    slug { "MyString" }
-    description { "MyText" }
+    title { Faker::Lorem.sentence }
+    description { Faker::Lorem.paragraphs.join(' ') }
   end
 end
