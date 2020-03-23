@@ -4,5 +4,5 @@ class Book < ApplicationRecord
 
   validates :title, presence: true
 
-  has_many :pages
+  has_many :pages, dependent: :destroy
 end

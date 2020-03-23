@@ -1,7 +1,9 @@
 FactoryBot.define do
   factory :page do
-    book { nil }
-    content { "MyText" }
-    number { 1 }
+    book
+    content { Faker::Lorem.paragraphs.join(' ') }
+    sequence :page_number do |n|
+      n
+    end
   end
 end

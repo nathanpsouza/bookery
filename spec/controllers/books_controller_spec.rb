@@ -154,12 +154,6 @@ RSpec.describe BooksController, type: :controller do
   describe 'DELETE #destroy' do
     let!(:book) { FactoryBot.create(:book) }
 
-    it 'remove book from database' do
-      expect {
-        delete :destroy, params: params 
-      }.to change(Book, :count).by(-1)
-    end
-
     it 'return http status ok' do
       delete :destroy, params: params
       expect(response).to have_http_status(:ok)
@@ -168,6 +162,30 @@ RSpec.describe BooksController, type: :controller do
     it 'return blank json response' do
       delete :destroy, params: params
       expect(response.body).to eq("")
+    end
+
+    context 'without pages' do
+      it 'remove book from database' do
+        expect {
+          delete :destroy, params: params 
+        }.to change(Book, :count).by(-1)
+      end
+    end
+
+    context 'with pages' do
+      let!(:pages) { FactoryBot.create_list(:page, 2, book: book) }
+
+      it 'remove book from database' do
+        expect {
+          delete :destroy, params: params 
+        }.to change(Book, :count).by(-1)
+      end
+
+      it 'remove pages from database' do
+        expect {
+          delete :destroy, params: params 
+        }.to change(Page, :count).by(-2)
+      end
     end
   end
 end
