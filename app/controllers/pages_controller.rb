@@ -33,7 +33,7 @@ class PagesController < ApplicationController
 
   private
     def page
-      @page ||= book.pages.find(params[:id])
+      @page ||= book.pages.find_by!(page_number: params[:id])
     end
 
     def book

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_22_160220) do
+ActiveRecord::Schema.define(version: 2020_03_23_174537) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 2020_03_22_160220) do
     t.integer "page_number"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["book_id", "page_number"], name: "index_pages_on_book_id_and_page_number", unique: true
     t.index ["book_id"], name: "index_pages_on_book_id"
   end
 

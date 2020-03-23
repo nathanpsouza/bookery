@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe PagesController, type: :controller do
   let!(:book) { FactoryBot.create(:book) }
-  let(:params) { { book_id: book.slug, id: page.id } }
+  let(:params) { { book_id: book.slug, id: page.page_number } }
 
   describe 'GET #index' do
     let!(:pages) { FactoryBot.create_list(:page, 3, book: book) }
@@ -173,6 +173,40 @@ RSpec.describe PagesController, type: :controller do
         put :update, params: params, body: payload, as: :json
         json = JSON.parse(response.body)
         expect(json['errors']).to_not be_empty
+      end
+
+      context 'with duplicated page_number' do
+        let(:page_number) { 999999 }
+
+        let(:page_attributes) { FactoryBot.attributes_for(:page, page_number: page_number) }
+
+        before do
+          FactoryBot.create(:page, book: book, page_number: page_number)
+        end
+
+        it 'do not save page on database' do
+          old_content = page.content
+          old_page_number = page.page_number
+  
+          put :update, params: params, body: payload, as: :json
+          
+          page.reload
+  
+          expect(page.content).to eq(old_content)
+          expect(page.page_number).to eq(old_page_number)
+        end
+  
+        it 'return http status unprocesable entity' do
+          put :update, params: params, body: payload, as: :json
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+  
+        it 'return errors on json' do
+          put :update, params: params, body: payload, as: :json
+          json = JSON.parse(response.body)
+          expect(json['errors']['page_number']).to eq(['has already been taken'])
+        end
+
       end
     end
   end
